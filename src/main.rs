@@ -1,3 +1,6 @@
+use std::env;
+
 fn main() {
-    println!("Hello, world!");
+    let path = env::current_dir();
+    println!("The current directory is {}", path.expect("Some error").display());
 }
