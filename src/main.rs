@@ -2,6 +2,8 @@ use ignore::Walk;
 use std::env;
 use std::io;
 
+use plus::pretty_print_dir_entry;
+
 fn main() -> io::Result<()> {
     let path = match env::current_dir() {
         Ok(path) => path,
@@ -10,10 +12,11 @@ fn main() -> io::Result<()> {
 
     for result in Walk::new(path) {
         match result {
-            Ok(entry) => println!("{}", entry.file_name().to_str().unwrap()),
+            Ok(entry) => pretty_print_dir_entry(entry),
             Err(err) => println!("ERROR: {}", err),
         }
     }
 
     Ok(())
 }
+
