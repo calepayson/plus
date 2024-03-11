@@ -1,8 +1,6 @@
+use ignore::Walk;
 use std::env;
 use std::io;
-
-use plus::print_directory_contents;
-use plus::list_git_ignore;
 
 fn main() -> io::Result<()> {
     let path = match env::current_dir() {
@@ -10,9 +8,12 @@ fn main() -> io::Result<()> {
         Err(e) => panic!("Could not get current working path: {e}"),
     };
 
-    let files_to_ignore = list_git_ignore()?;
-    
-    print_directory_contents(path, 0, &files_to_ignore)?;
+    for result in Walk::new(path) {
+        match result {
+            Ok(entry) => println!("{}", entry.file_name().to_str().unwrap()),
+            Err(err) => println!("ERROR: {}", err),
+        }
+    }
 
     Ok(())
 }
