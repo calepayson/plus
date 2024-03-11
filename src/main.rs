@@ -1,10 +1,9 @@
 use ignore::Walk;
 use std::env;
-use std::io;
 
-use plus::pretty_print_dir_entry;
+use plus::run;
 
-fn main() -> io::Result<()> {
+fn main() {
     let path = match env::current_dir() {
         Ok(path) => path,
         Err(e) => panic!("Could not get current working path: {e}"),
@@ -12,11 +11,9 @@ fn main() -> io::Result<()> {
 
     for result in Walk::new(path) {
         match result {
-            Ok(entry) => pretty_print_dir_entry(entry),
+            Ok(entry) => run::pretty_print_dir_entry(entry),
             Err(err) => println!("ERROR: {}", err),
         }
     }
-
-    Ok(())
 }
 
