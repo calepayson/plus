@@ -2,8 +2,6 @@ use std::fs::{self, File};
 use std::io::{self, Read};
 use std::path::PathBuf;
 
-use glob::Pattern;
-
 pub fn print_directory_contents(
     path: PathBuf, 
     depth: u32, 
@@ -15,7 +13,7 @@ pub fn print_directory_contents(
     for entry in fs::read_dir(path)? {
         let entry = entry?;
         let path = entry.path();
-        if path.is_dir() && check_is_not_dot_file(&path) && check_if_should_ignore(&path, patterns){
+        if path.is_dir() {
             print_directory_contents(path, depth + 1, patterns)?;
         } else {
             let depth = depth + 1;
@@ -40,14 +38,8 @@ fn get_file_name_from_path(path: &PathBuf) -> String {
     path.file_name().unwrap().to_string_lossy().to_string()
 }
 
-fn check_is_not_dot_file(path: &PathBuf) -> bool{
-    let file_name = get_file_name_from_path(path);
-    let first_char = file_name.chars().next();
-    if first_char == Some('.') {
-        return false
-    }
-    true
-}
+// fn check_is_not_dot_file(path: &PathBuf) -> bool{
+// }
 
 pub fn list_git_ignore() -> Result<Vec<String>, io::Error> {
     let gitignore_string = read_git_ignore()?;
@@ -72,14 +64,6 @@ fn read_git_ignore() -> Result<String, io::Error> {
     Ok(data)
 }
 
-fn check_if_should_ignore(path: &PathBuf, patterns: &Vec<String>) -> bool {
-    let file_path = get_file_name_from_path(path);
-    for line in patterns {
-         let file_matches_pattern = Pattern::new(line).unwrap().matches(&file_path);
-         if file_matches_pattern {
-             return true
-         }
-    }
-    false
-}
+// fn check_if_should_ignore(path: &PathBuf, patterns: &Vec<String>) -> bool {
+// }
 
